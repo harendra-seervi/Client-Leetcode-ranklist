@@ -1,0 +1,38 @@
+<div mat-dialog-title>
+    <h1>Fill LeetCode user details</h1>
+</div>
+<form [formGroup]="userForm" (ngSubmit)="onFormSubmit()">
+    <div mat-dialog-content class="content">
+        <div class="row">
+            <mat-form-field appearance="outline" style="width: 34vw;">
+                <mat-label>Name</mat-label>
+                <input fxFlex="100" matInput type="text" placeholder="Eg. Harendra Seervi" formControlName="name">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>e-mail</mat-label>
+                <input matInput type="email" placeholder="Eg. abc@gmail.com" formControlName="email">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Institute</mat-label>
+                <input matInput type="text" placeholder="Eg. National Institute Of Engineering" formControlName="institute">
+            </mat-form-field>
+        </div>
+    
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput type="text" placeholder="Eg. India" formControlName="country">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>LeetCode Username</mat-label>
+                <input matInput type="text" placeholder="*Official leetcode username" formControlName="lusername">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions class="action">
+        <button mat-raised-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button mat-raised-button color="primary" type="submit">{{data?'update' :'save'}}</button>
+    </div>
+</form>
