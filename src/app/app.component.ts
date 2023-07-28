@@ -14,7 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class AppComponent implements OnInit{
   title = 'crud-client';
-  displayedColumns: string[] = ['id','name', 'country', 'email', 'institute','lusername','action'];
+  displayedColumns: string[] = ['id','name', 'country', 'email', 'institute','lusername','rat','action'];
   dataSource!: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -27,29 +27,77 @@ export class AppComponent implements OnInit{
     dialogRef.afterClosed().subscribe({
       next:(val)=>{
         if(val==true){
-          this.getUserList();
+          this.executeFunctions();
         }
       }
     })
   }
 
   ngOnInit():void{
-    this.getUserList();
+    // this.getUserList();
+    // // console.log(this._userService.getRating("harenrda_seervi"));
+    // this.showRating();
+    this.executeFunctions();
   }
 
-  getUserList(){
-    this._userService.getUserList().subscribe({
-      next:(res)=>{
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.sort= this.sort;
-        this.dataSource.paginator = this.paginator;
-
-      },
-      error:(err)=>{
-        console.log(err);
-      }
-    })
+  // Inside your AppComponent class
+  async executeFunctions() {
+    try {
+      const userList = await this.getUserList();
+      const ratingData = await this.showRating();
+      console.log('User List:', userList);
+      console.log('Rating Data:', ratingData);
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+
+  getUserList(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._userService.getUserList().subscribe(
+        (res) => {
+          this.dataSource = new MatTableDataSource(res);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          resolve(res);
+        },
+        (err) => {
+          console.log(err);
+          reject(err);
+        }
+      );
+    });
+  }
+  
+  async updateTableRating(lusername: any): Promise<any> {
+    try {
+      const response = await this._userService.getRating(lusername).toPromise();
+      return response.data.rating;
+    } catch (error) {
+      console.error(error);
+      return 0; // or any default value to handle errors
+    }
+  }
+  
+
+  async showRating(): Promise<void> {
+    try {
+      const newData = await Promise.all(
+        this.dataSource.data.map(async (row) => {
+          console.log(row.lusername);
+          const r = await this.updateTableRating(row.lusername);
+          return { ...row, rat: r };
+        })
+      );
+      this.dataSource.data = newData;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -64,19 +112,36 @@ export class AppComponent implements OnInit{
     // As of now i did not handle the error and next part---------------->
     this._userService.deleteUser(id).subscribe();
     alert("Deleted");
-    this.getUserList();
+    // this.getUserList();
+    this.executeFunctions()
   }
 
   openEditForm(data:any){ 
     const dialogRef=this._dialog.open(UserAddEditComponent,{
       data,
     });
+    
     dialogRef.afterClosed().subscribe({
       next:(val)=>{
         if(val==true){
-          this.getUserList();
+          this.executeFunctions()
         }
       }
     })
   }
+
+
+  
+  
+
+  
+  
 }
+
+// showRating(){
+
+//   this.dataSource.data.map((row)=>{
+//     console.log(row);
+//   })
+  
+// }

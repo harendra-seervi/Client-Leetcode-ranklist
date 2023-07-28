@@ -7,7 +7,7 @@
 <div class="main-body">
     <mat-form-field>
         <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Harendra" #input>
     </mat-form-field>
       
     <div class="mat-elevation-z8">
@@ -48,6 +48,12 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> LeetCode Username </th>
         <td mat-cell *matCellDef="let row"> {{row.lusername}} </td>
         </ng-container>
+        <!-- rating Column -->
+        <ng-container matColumnDef="rat">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Leetcode Rating</th>
+            <td mat-cell *matCellDef="let row" class="custom-margin">{{row.rat}}</td>
+          </ng-container>
+          
 
         <!-- Actions Column -->
         <ng-container matColumnDef="action">
